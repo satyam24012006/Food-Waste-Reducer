@@ -4,6 +4,7 @@ import com.foodwaste.model.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDateTime;
+import com.foodwaste.model.Notifications;
 
 public class Dtos {
 
@@ -70,7 +71,7 @@ public class Dtos {
             LocalDateTime createdAt
     ) {
 
-        public static NotificationResponse from(Notification n) {
+        public static NotificationResponse from(Notifications n) {
             return new NotificationResponse(
                     n.getId(),
                     n.getTitle(),
