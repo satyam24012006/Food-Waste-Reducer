@@ -12,6 +12,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/rewards")
 public class RewardController {
+
     private final RewardService service;
 
     public RewardController(RewardService service) {
@@ -25,13 +26,21 @@ public class RewardController {
 
     @PostMapping("/redeem")
     @PreAuthorize("hasRole('DONOR')")
-    public RedeemResponse redeem(@Valid @RequestBody RedeemRequest r, Authentication auth) {
-        return service.redeem(auth.getName(), r.rewardId());
+    public RedeemResponse redeem(
+            @Valid @RequestBody RedeemRequest r,
+            Authentication auth) {
+
+        return service.redeem(
+                auth.getName(),
+                r.rewardId()
+        );
     }
 
     @GetMapping("/mine")
     @PreAuthorize("hasRole('DONOR')")
-    public List<RedeemedRewardResponse> mine(Authentication auth) {
-        return service.myRedemptions(auth.getName()).stream().map(RedeemedRewardResponse::from).toList();
+    public List<RedeemedRewardResponse> mine(
+            Authentication auth) {
+
+        return service.myRedemptions(auth.getName());
     }
 }

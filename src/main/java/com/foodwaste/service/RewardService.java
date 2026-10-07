@@ -18,11 +18,16 @@ import java.util.UUID;
 
 @Service
 public class RewardService {
+
     private final RewardRepository rewards;
     private final UserRepository users;
     private final UserRewardRepository userRewards;
 
-    public RewardService(RewardRepository rewards, UserRepository users, UserRewardRepository userRewards) {
+    public RewardService(
+            RewardRepository rewards,
+            UserRepository users,
+            UserRewardRepository userRewards) {
+
         this.rewards = rewards;
         this.users = users;
         this.userRewards = userRewards;
@@ -30,44 +35,89 @@ public class RewardService {
 
     @Transactional(readOnly = true)
     public List<RewardResponse> catalog() {
-        return rewards.findByActiveTrueOrderByRequiredPointsAsc().stream().map(RewardResponse::from).toList();
+
+        return rewards.findByActiveTrueOrderByRequiredPointsAsc()
+                .stream()
+                .map(RewardResponse::from)
+                .toList();
     }
 
-    /** Redeems a reward for the currently authenticated user (identified by email, not a client-supplied id). */
     @Transactional
     public RedeemResponse redeem(String email, Long rewardId) {
+
         User user = users.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.UNAUTHORIZED,
+                                "User not found"
+                        ));
 
         Reward reward = rewards.findById(rewardId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reward not found"));
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.NOT_FOUND,
+                                "Reward not found"
+                        ));
 
         if (!reward.isActive()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "This reward is no longer active");
-        }
-        if (user.getRewardPoints() < reward.getRequiredPoints()) {
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Not enough points for this reward");
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "This reward is no longer active"
+            );
         }
 
-        user.setRewardPoints(user.getRewardPoints() - reward.getRequiredPoints());
+        if (user.getRewardPoints() < reward.getRequiredPoints()) {
+            throw new ResponseStatusException(
+                    HttpStatus.CONFLICT,
+                    "Not enough points for this reward"
+            );
+        }
+
+        user.setRewardPoints(
+                user.getRewardPoints() - reward.getRequiredPoints()
+        );
+
         users.save(user);
 
-        String couponCode = "FWR-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String couponCode =
+                "FWR-" +
+                        UUID.randomUUID()
+                                .toString()
+                                .substring(0, 8)
+                                .toUpperCase();
 
         UserReward ur = new UserReward();
+
         ur.setUser(user);
         ur.setReward(reward);
         ur.setCouponCode(couponCode);
         ur.setRedeemedAt(LocalDateTime.now());
+
         userRewards.save(ur);
 
-        return new RedeemResponse(reward.getName(), couponCode, user.getRewardPoints());
+        return new RedeemResponse(
+                reward.getName(),
+                couponCode,
+                user.getRewardPoints()
+        );
     }
 
+    // IMPORTANT:
+    // DTO conversion is now done INSIDE the transaction.
     @Transactional(readOnly = true)
-    public List<UserReward> myRedemptions(String email) {
+    public List<RedeemedRewardResponse> myRedemptions(String email) {
+
         User user = users.findByEmail(email)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
-        return userRewards.findByUserOrderByRedeemedAtDesc(user);
+                .orElseThrow(() ->
+                        new ResponseStatusException(
+                                HttpStatus.UNAUTHORIZED,
+                                "User not found"
+                        ));
+
+        return userRewards
+                .findByUserOrderByRedeemedAtDesc(user)
+                .stream()
+                .map(RedeemedRewardResponse::from)
+                .toList();
     }
 }
