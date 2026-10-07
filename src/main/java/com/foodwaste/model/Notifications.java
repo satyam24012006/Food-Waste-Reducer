@@ -30,7 +30,7 @@ public class Notifications {
 
     private String icon;
 
-    @Column(nullable = false)
+    @Column(name = "is_read", nullable = false)
     private boolean read = false;
 
     @Column(nullable = false)
