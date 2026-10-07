@@ -1,552 +1,3787 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="data:,">
-<title>Food Waste Reducer</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:,">
 
-<style>
-:root{
-  --green:#198754; --green-dark:#116b40; --green-light:#eaf7ee; --green-soft:#f4fbf6;
-  --text:#173126; --muted:#718079; --border:#e2ebe5; --white:#ffffff;
-  --amber:#a86a00; --amber-bg:#fdefd0; --blue:#2b5fa8; --blue-bg:#dfe9f7;
-  --red:#c0392b; --red-bg:#fbe4e1; --shadow:0 12px 35px rgba(24,79,51,.07); --radius:18px;
-}
-*{box-sizing:border-box; margin:0; padding:0;}
-html{scroll-behavior:smooth;}
-body{
-  font-family:Inter,Arial,sans-serif; color:var(--text);
-  background:
-    radial-gradient(circle at 5% 5%, #e3f7e9 0, transparent 28%),
-    radial-gradient(circle at 95% 5%, #e1f5fb 0, transparent 28%), #f5f9f6;
-  min-height:100vh; font-size:15px;
-}
-button,input,select,textarea{font:inherit;}
-button{cursor:pointer;}
-[hidden]{display:none !important;}
+  <title>Food Waste Reducer</title>
 
-.app-shell{
-  width:min(1450px,96%); margin:18px auto; min-height:calc(100vh - 36px);
-  background:rgba(255,255,255,.92); border:1px solid #e4ece7; border-radius:30px;
-  overflow:hidden; box-shadow:0 25px 70px rgba(26,67,45,.12); display:flex;
-}
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-.sidebar{width:250px; flex:0 0 250px; background:#fbfdfc; border-right:1px solid var(--border); padding:28px 16px; display:flex; flex-direction:column;}
-.brand{display:flex; align-items:center; gap:11px; padding:0 10px 28px;}
-.brand-icon{width:40px; height:40px; display:grid; place-items:center; font-size:26px; background:var(--green-light); border-radius:11px;}
-.brand-name{font-weight:800; font-size:16px; line-height:1.1;}
-.brand-sub{font-size:9px; color:#87948d; margin-top:4px; letter-spacing:.4px;}
-.nav-title{font-size:10.5px; text-transform:uppercase; letter-spacing:1px; color:#9aa59f; padding:6px 12px 10px;}
-.side-nav{display:flex; flex-direction:column; gap:5px;}
-.side-link{border:0; background:transparent; color:#66756d; text-align:left; padding:12px 14px; border-radius:12px; display:flex; align-items:center; gap:12px; font-size:13.5px; font-weight:600;}
-.side-link:hover, .side-link.active{background:#e5f6eb; color:var(--green-dark);}
-.side-link .nav-icon{width:18px; text-align:center; font-size:16px;}
-.side-note{margin-top:auto; background:#edf8f0; border-radius:14px; padding:14px; font-size:11px; line-height:1.55; color:#62806d;}
-.side-note strong{display:block; color:var(--green-dark); margin-bottom:5px; font-size:12px;}
+  <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+  >
 
-.main-wrap{min-width:0; flex:1; display:flex; flex-direction:column;}
-.topbar{min-height:68px; border-bottom:1px solid var(--border); background:rgba(255,255,255,.88); display:flex; align-items:center; justify-content:flex-end; gap:16px; padding:0 26px; flex-wrap:wrap;}
-.live{display:flex; align-items:center; gap:7px; color:#9aa59f; font-size:12.5px; font-weight:600;}
-.live.on{color:var(--green-dark);}
-.live-dot{width:7px; height:7px; border-radius:50%; background:#c7d3cc;}
-.live.on .live-dot{background:#2bb673; box-shadow:0 0 0 4px #e7f7ed;}
-.mini-profile{display:flex; align-items:center; gap:9px;}
-.avatar{width:34px; height:34px; border-radius:50%; background:var(--green-light); display:grid; place-items:center; color:var(--green-dark); font-size:14px; font-weight:800;}
-.user-name{font-size:12.5px; font-weight:700; line-height:1.3;}
-.user-name small{display:block; font-size:10px; color:#89958f; font-weight:500;}
-.role-badge{font-size:10px; font-weight:800; color:#187346; background:#dff4e5; border-radius:20px; padding:5px 10px; letter-spacing:.3px;}
-.logout-btn{border:1px solid #dce7e0; background:#fff; color:#617069; border-radius:10px; padding:8px 13px; font-size:12px; font-weight:700;}
-.logout-btn:hover{background:#f4faf6; color:var(--green-dark);}
-.content{padding:24px 26px 40px; max-width:1320px; width:100%; margin:0 auto;}
+  <style>
 
-.auth-shell{max-width:600px; margin:40px auto; background:#fff; border:1px solid var(--border); border-radius:24px; box-shadow:var(--shadow); padding:36px;}
-.auth-logo{text-align:center; font-size:40px; margin-bottom:8px;}
-.auth-heading{text-align:center; font-size:26px; font-weight:800;}
-.auth-sub{text-align:center; color:var(--muted); font-size:13.5px; margin:8px 0 24px;}
-.auth-role{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px;}
-.auth-role label{position:relative; display:block;}
-.auth-role input{position:absolute; opacity:0;}
-.auth-role span{display:block; border:1px solid var(--border); background:#fff; border-radius:12px; padding:12px; text-align:center; font-size:13.5px; font-weight:700; color:#718079;}
-.auth-role input:checked + span{border-color:#70c08e; background:var(--green-soft); color:var(--green-dark);}
-.auth-field{margin-bottom:15px;}
-.auth-field label{display:block; font-size:12.5px; font-weight:700; color:#526159; margin-bottom:6px;}
-.auth-field input{width:100%; border:1px solid var(--border); border-radius:11px; padding:12px 13px; outline:none; background:#fcfefd; color:var(--text); font-size:14px;}
-.auth-field input:focus{border-color:#78bf91; box-shadow:0 0 0 4px #eaf7ee;}
-.primary{border:0; background:linear-gradient(135deg,#1c9a55,#137540); color:#fff; border-radius:11px; padding:12px 20px; font-size:14px; font-weight:800; box-shadow:0 8px 18px rgba(25,135,84,.16);}
-.primary:hover{filter:brightness(1.03);}
-.primary:disabled{opacity:.55; cursor:not-allowed;}
-.auth-submit{width:100%; margin-top:6px;}
-.auth-toggle{text-align:center; margin-top:15px;}
-.auth-toggle button{border:0; background:none; color:var(--green); font-weight:800; font-size:13px;}
-.msg{margin-top:14px; padding:11px 13px; border-radius:10px; font-size:13px; font-weight:600; display:none;}
-.msg.success{display:block; background:#e9f8ee; border:1px solid #c9ead3; color:var(--green-dark);}
-.msg.error{display:block; background:var(--red-bg); border:1px solid #f3c9c2; color:var(--red);}
 
-.hero{position:relative; overflow:hidden; min-height:190px; border-radius:20px; padding:28px 30px;
-  background:radial-gradient(circle at 78% 40%, rgba(100,190,122,.25), transparent 25%), linear-gradient(100deg,#e5f8e9,#f3fbf3 72%,#e1f5e6);
-  border:1px solid #dcefe1; display:flex; align-items:center; justify-content:space-between; margin-bottom:18px; gap:20px; flex-wrap:wrap;}
-.eyebrow{display:inline-flex; align-items:center; gap:6px; background:#d7f2de; color:#29804e; border-radius:20px; padding:6px 12px; font-size:11px; font-weight:800; margin-bottom:10px;}
-.hero h1{font-size:32px; line-height:1.15; font-weight:800; letter-spacing:-.5px;}
-.hero h1 span{color:#168044;}
-.hero p{color:#718078; font-size:13.5px; line-height:1.6; max-width:480px; margin:10px 0 16px;}
-.hero-actions{display:flex; gap:10px; flex-wrap:wrap;}
-.hero-btn{border:1px solid transparent; border-radius:10px; padding:10px 16px; font-size:13px; font-weight:800;}
-.hero-btn.primary{background:var(--green); color:#fff;}
-.hero-btn.secondary{background:#fff; color:var(--green-dark); border-color:#b9d8c3;}
-.hero-art{font-size:50px; display:flex; gap:6px; opacity:.9;}
+    :root{
+      --green:#198754;
+      --green-dark:#116b40;
+      --green-light:#eaf7ee;
+      --green-soft:#f4fbf6;
 
-#expiringBanner{margin-bottom:18px; background:#fff8e7; border:1px solid #f7e7bd; color:#8a691e; border-radius:14px; padding:14px 16px;}
-#expiringBanner strong{font-size:13px; display:flex; align-items:center; gap:7px; margin-bottom:8px;}
-#expiringScroll{display:flex; gap:10px; overflow-x:auto;}
-.expiring-chip{flex:0 0 auto; background:#fff; border:1px solid #f0dca6; border-radius:10px; padding:9px 13px; min-width:170px; font-size:12px;}
-.expiring-chip .t{font-weight:700; font-size:13px; margin-bottom:2px; color:var(--text);}
-.expiring-chip .m{color:#8a691e;}
+      --text:#173126;
+      --muted:#718079;
 
-.dashboard-grid{display:grid; grid-template-columns:minmax(0,1fr) 340px; gap:18px; align-items:start;}
-.left-col, .right-col{display:flex; flex-direction:column; gap:18px;}
-.card{background:rgba(255,255,255,.97); border:1px solid var(--border); border-radius:19px; box-shadow:0 7px 22px rgba(26,70,45,.05); overflow:hidden;}
-.card-head{padding:20px 20px 4px; display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
-.card-title{display:flex; align-items:center; gap:10px; font-size:16px; font-weight:800;}
-.card-title-icon{width:30px; height:30px; border-radius:9px; background:#e7f6eb; color:var(--green); display:grid; place-items:center; font-size:16px; flex:0 0 30px;}
-.card-sub{font-size:11.5px; color:#929d97; margin-top:3px;}
+      --border:#e2ebe5;
+      --white:#ffffff;
 
-#foodForm{padding:14px 20px 20px;}
-.post-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px;}
-.post-grid .full{grid-column:1/-1;}
-.field{display:flex; flex-direction:column; gap:6px;}
-.field label{font-size:12.5px; font-weight:700; color:#526159;}
-.field input, .field select{width:100%; border:1px solid var(--border); border-radius:11px; padding:11px 13px; outline:none; background:#fcfefd; color:var(--text); font-size:13.5px;}
-.field input:focus, .field select:focus{border-color:#78bf91; box-shadow:0 0 0 4px #eaf7ee;}
-.location-row{display:flex; gap:8px;}
-.location-row input{flex:1;}
-.small-btn{border:1px solid #dbe8df; background:#f8fbf9; border-radius:10px; padding:0 13px; color:#4c6b5b; font-size:16px;}
-.location-box{background:#eaf8ee; color:#299055; border-radius:9px; padding:8px 11px; font-size:11.5px; margin-top:7px; font-weight:600;}
-.location-box.err{background:#fbe9e6; color:var(--red);}
-.food-types{display:grid; grid-template-columns:1fr 1fr; gap:9px;}
-.food-option{position:relative;}
-.food-option input{position:absolute; opacity:0;}
-.food-label{display:block; border:1px solid #dce9e0; background:#fff; border-radius:11px; padding:11px; color:#65736c; font-size:12.5px; font-weight:700; text-align:center;}
-.food-option input:checked + .food-label{border-color:#68bb87; background:#effaf2; color:#187344;}
-.date-grid{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px;}
-.submit-area{display:flex; justify-content:flex-end; margin-top:4px;}
+      --amber:#a86a00;
+      --amber-bg:#fdefd0;
 
-.impact-grid{padding:6px 16px 18px; display:grid; grid-template-columns:1fr 1fr; gap:10px;}
-.impact-stat{min-height:78px; background:#f8fbf9; border:1px solid #edf2ee; border-radius:12px; padding:12px;}
-.impact-stat .i{font-size:15px;}
-.impact-stat strong{display:block; font-size:21px; margin-top:4px;}
-.impact-stat span{font-size:10px; color:#87928d;}
+      --blue:#2b5fa8;
+      --blue-bg:#dfe9f7;
 
-.rewards{padding:6px 16px 18px;}
-.reward-item{display:flex; align-items:center; gap:11px; padding:12px 4px; border-bottom:1px solid #edf2ef;}
-.reward-item:last-child{border-bottom:0;}
-.reward-icon{width:36px; height:36px; flex:0 0 36px; display:grid; place-items:center; background:#fff4d8; border-radius:50%; font-size:16px;}
-.reward-info{min-width:0; flex:1;}
-.reward-name{font-size:12.5px; font-weight:800;}
-.reward-desc{font-size:10.5px; color:#8b958f; margin-top:2px; line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-.reward-points{background:#dff5e6; color:#25834b; border-radius:20px; padding:4px 9px; font-size:10px; font-weight:800; white-space:nowrap;}
-.reward-redeem{border:0; background:#eaf7ee; color:#23834a; border-radius:8px; padding:7px 10px; font-size:11px; font-weight:800; margin-left:6px;}
-.reward-redeem:disabled{background:#f1f3f1; color:#a9b2ac; cursor:not-allowed;}
+      --red:#c0392b;
+      --red-bg:#fbe4e1;
 
-.profile-card{padding:16px;}
-.profile-user{display:flex; align-items:center; gap:11px;}
-.profile-avatar{width:44px; height:44px; border-radius:50%; background:#eaf4ed; display:grid; place-items:center; color:#6b8275; font-size:18px; font-weight:800;}
-.profile-user strong{font-size:13px; display:block;}
-.profile-user span{font-size:11px; color:#8b9690;}
-.profile-role{margin-left:auto; background:#def3e4; color:#208048; border-radius:20px; padding:5px 9px; font-size:9.5px; font-weight:800;}
+      --shadow:0 12px 35px rgba(24,79,51,.07);
 
-.tabs{display:flex; gap:7px; padding:0 20px 14px; flex-wrap:wrap;}
-.tabs button{border:1px solid var(--border); background:#fff; color:#77847e; border-radius:9px; padding:8px 13px; font-size:12px; font-weight:800;}
-.tabs button.active{background:#e8f7ed; color:#197443; border-color:#c9e7d2;}
-.filter-row{display:flex; gap:10px; padding:0 20px 16px; flex-wrap:wrap;}
-.filter-row input{flex:1; min-width:160px; border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13px;}
-.filter-row select{border:1px solid var(--border); border-radius:10px; padding:10px 12px; font-size:13px; color:#66746d;}
+      --radius:18px;
+    }
 
-.listing-body{padding:4px 16px 20px;}
-.listing-grid{display:grid; grid-template-columns:repeat(2,1fr); gap:12px;}
-.listing-card{border:1px solid #e7eee9; border-radius:14px; overflow:hidden; background:#fff;}
-.listing-card.CLAIMED{border-color:#f0dcac;}
-.listing-card.PICKED_UP{border-color:#c9d9ee;}
-.listing-card.EXPIRED{opacity:.6;}
-.listing-thumb{height:64px; display:grid; place-items:center; font-size:30px; background:linear-gradient(135deg,#e5efe7,#cbdccf);}
-.listing-card.CLAIMED .listing-thumb{background:linear-gradient(135deg,#fbeecb,#f3dba0);}
-.listing-card.PICKED_UP .listing-thumb{background:linear-gradient(135deg,#dde9fa,#c1d7f5);}
-.listing-content{padding:12px;}
-.listing-top{display:flex; justify-content:space-between; align-items:start; gap:6px; margin-bottom:6px;}
-.listing-card h3{font-size:13.5px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-.food-badge{font-size:9.5px; font-weight:800; padding:3px 8px; border-radius:20px; background:var(--green-light); color:var(--green-dark); white-space:nowrap;}
-.info-row{display:flex; align-items:center; gap:6px; font-size:11px; color:#7a857f; margin-top:4px;}
-.info-icon{font-size:12px; flex:0 0 auto;}
-.status{display:inline-block; margin-top:8px; padding:3px 9px; border-radius:20px; font-size:9.5px; font-weight:800; background:#e5f6ea; color:#27824b;}
-.status.CLAIMED{background:var(--amber-bg); color:var(--amber);}
-.status.PICKED_UP{background:var(--blue-bg); color:var(--blue);}
-.status.EXPIRED{background:#e6e9e9; color:#556;}
-.listing-actions{margin-top:10px; display:flex; gap:6px; flex-wrap:wrap;}
-.small{border:0; border-radius:8px; padding:7px 11px; font-size:11px; font-weight:800; background:var(--green); color:#fff;}
-.small.ghost{background:#f1f5f2; color:#3d4a43;}
-.small.danger{background:var(--red-bg); color:var(--red);}
 
-.empty-card{grid-column:1/-1; text-align:center; padding:32px; color:#7c8781; font-size:13px; background:#fff; border:1px dashed #cbd8d0; border-radius:14px;}
-.footer{text-align:center; color:#8c9892; font-size:11.5px; margin-top:22px; padding-bottom:8px;}
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
 
-@media(max-width:1100px){
-  .sidebar{width:210px; flex-basis:210px;}
-  .dashboard-grid{grid-template-columns:1fr;}
-  .right-col{display:grid; grid-template-columns:1fr 1fr;}
-  .profile-card{grid-column:1/-1;}
-}
-@media(max-width:760px){
-  .app-shell{width:100%; margin:0; border-radius:0; min-height:100vh;}
-  .sidebar{display:none;}
-  .content{padding:14px;}
-  .hero h1{font-size:26px;}
-  .dashboard-grid{display:block;}
-  .right-col{display:flex; margin-top:18px;}
-  .post-grid, .form-grid{grid-template-columns:1fr;}
-  .post-grid .full{grid-column:auto;}
-  .listing-grid{grid-template-columns:1fr;}
-  .user-name{display:none;}
-}
+    html{
+      scroll-behavior:smooth;
+    }
 
-.notification-btn{border:1px solid var(--border);background:#fff;color:#4f6258;border-radius:11px;padding:8px 11px;font-weight:800;font-size:12px}.notification-btn span{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:10px;background:#e8f7ed;color:var(--green-dark);margin-left:3px}.optional{font-weight:500;color:#9aa59f}.nearby-toolbar{margin:14px 20px 0;padding:13px 14px;border:1px solid #dcefe1;background:#f4fbf6;border-radius:13px;display:flex;justify-content:space-between;gap:12px;align-items:center}.nearby-toolbar strong{font-size:12px}.nearby-toolbar span{display:block;color:#829089;font-size:10.5px;margin-top:3px}.nearby-controls{display:flex;gap:7px}.nearby-controls select{border:1px solid #dbe8df;background:#fff;border-radius:9px;padding:8px 10px;font-size:11px;color:#4e6258}.nearby-controls .small-btn{padding:8px 11px;font-size:11px}.reward-history-head{padding:14px 20px 8px;font-size:11px;font-weight:800;color:#718079;text-transform:uppercase;letter-spacing:.6px;border-top:1px solid var(--border)}.reward-history{padding:0 20px 18px}.reward-history-item{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid #edf2ee;font-size:11.5px}.reward-history-item:last-child{border-bottom:0}.reward-history-item strong{display:block;font-size:12px}.reward-history-item span{color:#8b9690}.reward-code{font-family:monospace;background:#eef8f1;color:#237b48;border-radius:7px;padding:5px 7px;font-size:10px}.admin-stats-grid{padding:16px 20px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.admin-stat{border:1px solid #e3ece6;background:#fbfdfc;border-radius:13px;padding:14px}.admin-stat span{display:block;color:#7d8a83;font-size:10.5px;font-weight:700}.admin-stat strong{display:block;margin-top:5px;font-size:22px;color:var(--green-dark)}.notification-panel{position:fixed;right:28px;top:78px;width:min(360px,calc(100vw - 36px));background:#fff;border:1px solid var(--border);border-radius:16px;box-shadow:0 20px 55px rgba(25,60,40,.18);z-index:50;overflow:hidden}.notification-panel-head{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--border)}.notification-panel-head button{border:0;background:transparent;font-size:22px;color:#829089}.notification-item{padding:12px 16px;border-bottom:1px solid #edf2ee;font-size:12px}.notification-item strong{display:block;font-size:12.5px;margin-bottom:3px}.notification-item span{color:#839089}.notification-empty{padding:28px 16px;text-align:center;color:#8a9690;font-size:12px}.distance-badge{display:inline-block;margin-left:5px;background:#e9f7ed;color:#247b49;border-radius:10px;padding:3px 7px;font-size:9.5px;font-weight:800}.listing-thumb img{width:100%;height:100%;object-fit:cover;border-radius:12px}
-@media(max-width:900px){.admin-stats-grid{grid-template-columns:repeat(2,1fr)}.nearby-toolbar{align-items:flex-start;flex-direction:column}.dashboard-grid{grid-template-columns:1fr}.right-col{display:grid;grid-template-columns:1fr 1fr}.profile-card{grid-column:1/-1}}
-@media(max-width:620px){.right-col{display:flex}.admin-stats-grid{grid-template-columns:1fr 1fr}.nearby-controls{width:100%}.nearby-controls select,.nearby-controls button{flex:1}.notification-panel{right:18px;top:70px}}
-.fixed-radius-badge{display:inline-flex;align-items:center;gap:6px;padding:9px 12px;border:1px solid #cfe5d7;border-radius:10px;background:#fff;color:#2b7650;font-size:12px;font-weight:800}.pickup-waiting{display:inline-flex;align-items:center;padding:8px 10px;border-radius:9px;background:#f4f7f5;color:#718079;font-size:11px;font-weight:700}
+    body{
+      font-family:Inter,Arial,sans-serif;
+      color:var(--text);
 
-.pickup-status { margin: 8px 0; padding: 8px 10px; border-radius: 10px; font-size: 13px; font-weight: 700; }
-.pickup-status.waiting { background: #fff7df; color: #8a5a00; }
-.pickup-status.completed { background: #e8f7ed; color: #168447; }
-</style>
+      background:
+              radial-gradient(
+                      circle at 5% 5%,
+                      #e3f7e9 0,
+                      transparent 28%
+              ),
+              radial-gradient(
+                      circle at 95% 5%,
+                      #e1f5fb 0,
+                      transparent 28%
+              ),
+              #f5f9f6;
+
+      min-height:100vh;
+      font-size:15px;
+    }
+
+    button,
+    input,
+    select,
+    textarea{
+      font:inherit;
+    }
+
+    button{
+      cursor:pointer;
+    }
+
+    [hidden]{
+      display:none !important;
+    }
+
+
+    .app-shell{
+      width:min(1450px,96%);
+      margin:18px auto;
+
+      min-height:calc(100vh - 36px);
+
+      background:rgba(255,255,255,.92);
+
+      border:1px solid #e4ece7;
+      border-radius:30px;
+
+      overflow:hidden;
+
+      box-shadow:
+              0 25px 70px rgba(26,67,45,.12);
+
+      display:flex;
+    }
+
+
+    .sidebar{
+      width:250px;
+      flex:0 0 250px;
+
+      background:#fbfdfc;
+
+      border-right:1px solid var(--border);
+
+      padding:28px 16px;
+
+      display:flex;
+      flex-direction:column;
+    }
+
+    .brand{
+      display:flex;
+      align-items:center;
+
+      gap:11px;
+
+      padding:0 10px 28px;
+    }
+
+    .brand-icon{
+      width:40px;
+      height:40px;
+
+      display:grid;
+      place-items:center;
+
+      font-size:26px;
+
+      background:var(--green-light);
+
+      border-radius:11px;
+    }
+
+    .brand-name{
+      font-weight:800;
+      font-size:16px;
+      line-height:1.1;
+    }
+
+    .brand-sub{
+      font-size:9px;
+      color:#87948d;
+
+      margin-top:4px;
+
+      letter-spacing:.4px;
+    }
+
+    .nav-title{
+      font-size:10.5px;
+
+      text-transform:uppercase;
+
+      letter-spacing:1px;
+
+      color:#9aa59f;
+
+      padding:6px 12px 10px;
+    }
+
+    .side-nav{
+      display:flex;
+      flex-direction:column;
+
+      gap:5px;
+    }
+
+    .side-link{
+      border:0;
+
+      background:transparent;
+
+      color:#66756d;
+
+      text-align:left;
+
+      padding:12px 14px;
+
+      border-radius:12px;
+
+      display:flex;
+      align-items:center;
+
+      gap:12px;
+
+      font-size:13.5px;
+      font-weight:600;
+    }
+
+    .side-link:hover,
+    .side-link.active{
+      background:#e5f6eb;
+      color:var(--green-dark);
+    }
+
+    .side-link .nav-icon{
+      width:18px;
+
+      text-align:center;
+
+      font-size:16px;
+    }
+
+    .side-note{
+      margin-top:auto;
+
+      background:#edf8f0;
+
+      border-radius:14px;
+
+      padding:14px;
+
+      font-size:11px;
+
+      line-height:1.55;
+
+      color:#62806d;
+    }
+
+    .side-note strong{
+      display:block;
+
+      color:var(--green-dark);
+
+      margin-bottom:5px;
+
+      font-size:12px;
+    }
+
+
+    .main-wrap{
+      min-width:0;
+
+      flex:1;
+
+      display:flex;
+      flex-direction:column;
+    }
+
+
+    .topbar{
+      min-height:68px;
+
+      border-bottom:1px solid var(--border);
+
+      background:rgba(255,255,255,.88);
+
+      display:flex;
+
+      align-items:center;
+
+      justify-content:flex-end;
+
+      gap:16px;
+
+      padding:0 26px;
+
+      flex-wrap:wrap;
+    }
+
+    .live{
+      display:flex;
+      align-items:center;
+
+      gap:7px;
+
+      color:#9aa59f;
+
+      font-size:12.5px;
+
+      font-weight:600;
+    }
+
+    .live.on{
+      color:var(--green-dark);
+    }
+
+    .live-dot{
+      width:7px;
+      height:7px;
+
+      border-radius:50%;
+
+      background:#c7d3cc;
+    }
+
+    .live.on .live-dot{
+      background:#2bb673;
+
+      box-shadow:
+              0 0 0 4px #e7f7ed;
+    }
+
+    .mini-profile{
+      display:flex;
+
+      align-items:center;
+
+      gap:9px;
+    }
+
+    .avatar{
+      width:34px;
+      height:34px;
+
+      border-radius:50%;
+
+      background:var(--green-light);
+
+      display:grid;
+      place-items:center;
+
+      color:var(--green-dark);
+
+      font-size:14px;
+
+      font-weight:800;
+    }
+
+    .user-name{
+      font-size:12.5px;
+
+      font-weight:700;
+
+      line-height:1.3;
+    }
+
+    .user-name small{
+      display:block;
+
+      font-size:10px;
+
+      color:#89958f;
+
+      font-weight:500;
+    }
+
+    .role-badge{
+      font-size:10px;
+
+      font-weight:800;
+
+      color:#187346;
+
+      background:#dff4e5;
+
+      border-radius:20px;
+
+      padding:5px 10px;
+
+      letter-spacing:.3px;
+    }
+
+    .logout-btn{
+      border:1px solid #dce7e0;
+
+      background:#fff;
+
+      color:#617069;
+
+      border-radius:10px;
+
+      padding:8px 13px;
+
+      font-size:12px;
+
+      font-weight:700;
+    }
+
+    .logout-btn:hover{
+      background:#f4faf6;
+
+      color:var(--green-dark);
+    }
+
+
+    .notification-btn{
+      border:1px solid var(--border);
+
+      background:#fff;
+
+      color:#4f6258;
+
+      border-radius:11px;
+
+      padding:8px 11px;
+
+      font-weight:800;
+
+      font-size:12px;
+
+      display:flex;
+
+      align-items:center;
+
+      gap:3px;
+    }
+
+    .notification-btn:hover{
+      background:#f4faf6;
+    }
+
+    .notification-btn span{
+      display:inline-grid;
+
+      place-items:center;
+
+      min-width:18px;
+      height:18px;
+
+      border-radius:10px;
+
+      background:#e8f7ed;
+
+      color:var(--green-dark);
+
+      margin-left:3px;
+
+      font-size:10px;
+    }
+
+
+
+
+    .content{
+      padding:24px 26px 40px;
+
+      max-width:1320px;
+
+      width:100%;
+
+      margin:0 auto;
+    }
+
+    .auth-shell{
+      max-width:600px;
+
+      margin:40px auto;
+
+      background:#fff;
+
+      border:1px solid var(--border);
+
+      border-radius:24px;
+
+      box-shadow:var(--shadow);
+
+      padding:36px;
+    }
+
+    .auth-logo{
+      text-align:center;
+
+      font-size:40px;
+
+      margin-bottom:8px;
+    }
+
+    .auth-heading{
+      text-align:center;
+
+      font-size:26px;
+
+      font-weight:800;
+    }
+
+    .auth-sub{
+      text-align:center;
+
+      color:var(--muted);
+
+      font-size:13.5px;
+
+      margin:8px 0 24px;
+    }
+
+    .auth-role{
+      display:grid;
+
+      grid-template-columns:1fr 1fr;
+
+      gap:10px;
+
+      margin-bottom:18px;
+    }
+
+    .auth-role label{
+      position:relative;
+
+      display:block;
+    }
+
+    .auth-role input{
+      position:absolute;
+
+      opacity:0;
+    }
+
+    .auth-role span{
+      display:block;
+
+      border:1px solid var(--border);
+
+      background:#fff;
+
+      border-radius:12px;
+
+      padding:12px;
+
+      text-align:center;
+
+      font-size:13.5px;
+
+      font-weight:700;
+
+      color:#718079;
+    }
+
+    .auth-role input:checked + span{
+      border-color:#70c08e;
+
+      background:var(--green-soft);
+
+      color:var(--green-dark);
+    }
+
+    .auth-field{
+      margin-bottom:15px;
+    }
+
+    .auth-field label{
+      display:block;
+
+      font-size:12.5px;
+
+      font-weight:700;
+
+      color:#526159;
+
+      margin-bottom:6px;
+    }
+
+    .auth-field input{
+      width:100%;
+
+      border:1px solid var(--border);
+
+      border-radius:11px;
+
+      padding:12px 13px;
+
+      outline:none;
+
+      background:#fcfefd;
+
+      color:var(--text);
+
+      font-size:14px;
+    }
+
+    .auth-field input:focus{
+      border-color:#78bf91;
+
+      box-shadow:
+              0 0 0 4px #eaf7ee;
+    }
+
+    .primary{
+      border:0;
+
+      background:
+              linear-gradient(
+                      135deg,
+                      #1c9a55,
+                      #137540
+              );
+
+      color:#fff;
+
+      border-radius:11px;
+
+      padding:12px 20px;
+
+      font-size:14px;
+
+      font-weight:800;
+
+      box-shadow:
+              0 8px 18px rgba(25,135,84,.16);
+    }
+
+    .primary:hover{
+      filter:brightness(1.03);
+    }
+
+    .primary:disabled{
+      opacity:.55;
+
+      cursor:not-allowed;
+    }
+
+    .auth-submit{
+      width:100%;
+
+      margin-top:6px;
+    }
+
+    .auth-toggle{
+      text-align:center;
+
+      margin-top:15px;
+    }
+
+    .auth-toggle button{
+      border:0;
+
+      background:none;
+
+      color:var(--green);
+
+      font-weight:800;
+
+      font-size:13px;
+    }
+
+    .msg{
+      margin-top:14px;
+
+      padding:11px 13px;
+
+      border-radius:10px;
+
+      font-size:13px;
+
+      font-weight:600;
+
+      display:none;
+    }
+
+    .msg.success{
+      display:block;
+
+      background:#e9f8ee;
+
+      border:1px solid #c9ead3;
+
+      color:var(--green-dark);
+    }
+
+    .msg.error{
+      display:block;
+
+      background:var(--red-bg);
+
+      border:1px solid #f3c9c2;
+
+      color:var(--red);
+    }
+
+
+    .hero{
+      position:relative;
+
+      overflow:hidden;
+
+      min-height:190px;
+
+      border-radius:20px;
+
+      padding:28px 30px;
+
+      background:
+              radial-gradient(
+                      circle at 78% 40%,
+                      rgba(100,190,122,.25),
+                      transparent 25%
+              ),
+              linear-gradient(
+                      100deg,
+                      #e5f8e9,
+                      #f3fbf3 72%,
+                      #e1f5e6
+              );
+
+      border:1px solid #dcefe1;
+
+      display:flex;
+
+      align-items:center;
+
+      justify-content:space-between;
+
+      margin-bottom:18px;
+
+      gap:20px;
+
+      flex-wrap:wrap;
+    }
+
+    .eyebrow{
+      display:inline-flex;
+
+      align-items:center;
+
+      gap:6px;
+
+      background:#d7f2de;
+
+      color:#29804e;
+
+      border-radius:20px;
+
+      padding:6px 12px;
+
+      font-size:11px;
+
+      font-weight:800;
+
+      margin-bottom:10px;
+    }
+
+    .hero h1{
+      font-size:32px;
+
+      line-height:1.15;
+
+      font-weight:800;
+
+      letter-spacing:-.5px;
+    }
+
+    .hero h1 span{
+      color:#168044;
+    }
+
+    .hero p{
+      color:#718078;
+
+      font-size:13.5px;
+
+      line-height:1.6;
+
+      max-width:480px;
+
+      margin:10px 0 16px;
+    }
+
+    .hero-actions{
+      display:flex;
+
+      gap:10px;
+
+      flex-wrap:wrap;
+    }
+
+    .hero-btn{
+      border:1px solid transparent;
+
+      border-radius:10px;
+
+      padding:10px 16px;
+
+      font-size:13px;
+
+      font-weight:800;
+    }
+
+    .hero-btn.primary{
+      background:var(--green);
+
+      color:#fff;
+    }
+
+    .hero-btn.secondary{
+      background:#fff;
+
+      color:var(--green-dark);
+
+      border-color:#b9d8c3;
+    }
+
+    .hero-art{
+      font-size:50px;
+
+      display:flex;
+
+      gap:6px;
+
+      opacity:.9;
+    }
+
+    #expiringBanner{
+      margin-bottom:18px;
+
+      background:#fff8e7;
+
+      border:1px solid #f7e7bd;
+
+      color:#8a691e;
+
+      border-radius:14px;
+
+      padding:14px 16px;
+    }
+
+    #expiringBanner strong{
+      font-size:13px;
+
+      display:flex;
+
+      align-items:center;
+
+      gap:7px;
+
+      margin-bottom:8px;
+    }
+
+    #expiringScroll{
+      display:flex;
+
+      gap:10px;
+
+      overflow-x:auto;
+    }
+
+    .expiring-chip{
+      flex:0 0 auto;
+
+      background:#fff;
+
+      border:1px solid #f0dca6;
+
+      border-radius:10px;
+
+      padding:9px 13px;
+
+      min-width:170px;
+
+      font-size:12px;
+    }
+
+    .expiring-chip .t{
+      font-weight:700;
+
+      font-size:13px;
+
+      margin-bottom:2px;
+
+      color:var(--text);
+    }
+
+    .expiring-chip .m{
+      color:#8a691e;
+    }
+
+
+    .dashboard-grid{
+      display:grid;
+
+      grid-template-columns:minmax(0,1fr) 340px;
+
+      gap:18px;
+
+      align-items:start;
+    }
+
+    .left-col,
+    .right-col{
+      display:flex;
+
+      flex-direction:column;
+
+      gap:18px;
+    }
+
+    .card{
+      background:rgba(255,255,255,.97);
+
+      border:1px solid var(--border);
+
+      border-radius:19px;
+
+      box-shadow:
+              0 7px 22px rgba(26,70,45,.05);
+
+      overflow:hidden;
+    }
+
+    .card-head{
+      padding:20px 20px 4px;
+
+      display:flex;
+
+      justify-content:space-between;
+
+      align-items:flex-start;
+
+      gap:10px;
+    }
+
+    .card-title{
+      display:flex;
+
+      align-items:center;
+
+      gap:10px;
+
+      font-size:16px;
+
+      font-weight:800;
+    }
+
+    .card-title-icon{
+      width:30px;
+      height:30px;
+
+      border-radius:9px;
+
+      background:#e7f6eb;
+
+      color:var(--green);
+
+      display:grid;
+
+      place-items:center;
+
+      font-size:16px;
+
+      flex:0 0 30px;
+    }
+
+    .card-sub{
+      font-size:11.5px;
+
+      color:#929d97;
+
+      margin-top:3px;
+    }
+
+    #foodForm{
+      padding:14px 20px 20px;
+    }
+
+    .post-grid{
+      display:grid;
+
+      grid-template-columns:1fr 1fr;
+
+      gap:16px;
+    }
+
+    .post-grid .full{
+      grid-column:1/-1;
+    }
+
+    .field{
+      display:flex;
+
+      flex-direction:column;
+
+      gap:6px;
+    }
+
+    .field label{
+      font-size:12.5px;
+
+      font-weight:700;
+
+      color:#526159;
+    }
+
+    .field input,
+    .field select{
+      width:100%;
+
+      border:1px solid var(--border);
+
+      border-radius:11px;
+
+      padding:11px 13px;
+
+      outline:none;
+
+      background:#fcfefd;
+
+      color:var(--text);
+
+      font-size:13.5px;
+    }
+
+    .field input:focus,
+    .field select:focus{
+      border-color:#78bf91;
+
+      box-shadow:
+              0 0 0 4px #eaf7ee;
+    }
+
+    .location-row{
+      display:flex;
+
+      gap:8px;
+    }
+
+    .location-row input{
+      flex:1;
+    }
+
+    .small-btn{
+      border:1px solid #dbe8df;
+
+      background:#f8fbf9;
+
+      border-radius:10px;
+
+      padding:0 13px;
+
+      color:#4c6b5b;
+
+      font-size:16px;
+    }
+
+    .location-box{
+      background:#eaf8ee;
+
+      color:#299055;
+
+      border-radius:9px;
+
+      padding:8px 11px;
+
+      font-size:11.5px;
+
+      margin-top:7px;
+
+      font-weight:600;
+    }
+
+    .location-box.err{
+      background:#fbe9e6;
+
+      color:var(--red);
+    }
+
+    .food-types{
+      display:grid;
+
+      grid-template-columns:1fr 1fr;
+
+      gap:9px;
+    }
+
+    .food-option{
+      position:relative;
+    }
+
+    .food-option input{
+      position:absolute;
+
+      opacity:0;
+    }
+
+    .food-label{
+      display:block;
+
+      border:1px solid #dce9e0;
+
+      background:#fff;
+
+      border-radius:11px;
+
+      padding:11px;
+
+      color:#65736c;
+
+      font-size:12.5px;
+
+      font-weight:700;
+
+      text-align:center;
+    }
+
+    .food-option input:checked + .food-label{
+      border-color:#68bb87;
+
+      background:#effaf2;
+
+      color:#187344;
+    }
+
+    .date-grid{
+      display:grid;
+
+      grid-template-columns:1fr 1fr 1fr;
+
+      gap:8px;
+    }
+
+    .submit-area{
+      display:flex;
+
+      justify-content:flex-end;
+
+      margin-top:4px;
+    }
+
+    .optional{
+      font-weight:500;
+
+      color:#9aa59f;
+    }
+
+    .impact-grid{
+      padding:6px 16px 18px;
+
+      display:grid;
+
+      grid-template-columns:1fr 1fr;
+
+      gap:10px;
+    }
+
+    .impact-stat{
+      min-height:78px;
+
+      background:#f8fbf9;
+
+      border:1px solid #edf2ee;
+
+      border-radius:12px;
+
+      padding:12px;
+    }
+
+    .impact-stat .i{
+      font-size:15px;
+    }
+
+    .impact-stat strong{
+      display:block;
+
+      font-size:21px;
+
+      margin-top:4px;
+    }
+
+    .impact-stat span{
+      font-size:10px;
+
+      color:#87928d;
+    }
+
+    .rewards{
+      padding:6px 16px 18px;
+    }
+
+    .reward-item{
+      display:flex;
+
+      align-items:center;
+
+      gap:11px;
+
+      padding:12px 4px;
+
+      border-bottom:1px solid #edf2ef;
+    }
+
+    .reward-item:last-child{
+      border-bottom:0;
+    }
+
+    .reward-icon{
+      width:36px;
+      height:36px;
+
+      flex:0 0 36px;
+
+      display:grid;
+
+      place-items:center;
+
+      background:#fff4d8;
+
+      border-radius:50%;
+
+      font-size:16px;
+    }
+
+    .reward-info{
+      min-width:0;
+
+      flex:1;
+    }
+
+    .reward-name{
+      font-size:12.5px;
+
+      font-weight:800;
+    }
+
+    .reward-desc{
+      font-size:10.5px;
+
+      color:#8b958f;
+
+      margin-top:2px;
+
+      line-height:1.4;
+
+      white-space:nowrap;
+
+      overflow:hidden;
+
+      text-overflow:ellipsis;
+    }
+
+    .reward-points{
+      background:#dff5e6;
+
+      color:#25834b;
+
+      border-radius:20px;
+
+      padding:4px 9px;
+
+      font-size:10px;
+
+      font-weight:800;
+
+      white-space:nowrap;
+    }
+
+    .reward-redeem{
+      border:0;
+
+      background:#eaf7ee;
+
+      color:#23834a;
+
+      border-radius:8px;
+
+      padding:7px 10px;
+
+      font-size:11px;
+
+      font-weight:800;
+
+      margin-left:6px;
+    }
+
+    .reward-redeem:disabled{
+      background:#f1f3f1;
+
+      color:#a9b2ac;
+
+      cursor:not-allowed;
+    }
+
+    .reward-history-head{
+      padding:14px 20px 8px;
+
+      font-size:11px;
+
+      font-weight:800;
+
+      color:#718079;
+
+      text-transform:uppercase;
+
+      letter-spacing:.6px;
+
+      border-top:1px solid var(--border);
+    }
+
+    .reward-history{
+      padding:0 20px 18px;
+    }
+
+    .reward-history-item{
+      display:flex;
+
+      align-items:center;
+
+      justify-content:space-between;
+
+      gap:10px;
+
+      padding:10px 0;
+
+      border-bottom:1px solid #edf2ee;
+
+      font-size:11.5px;
+    }
+
+    .reward-history-item:last-child{
+      border-bottom:0;
+    }
+
+    .reward-history-item strong{
+      display:block;
+
+      font-size:12px;
+    }
+
+    .reward-history-item span{
+      color:#8b9690;
+    }
+
+    .reward-code{
+      font-family:monospace;
+
+      background:#eef8f1;
+
+      color:#237b48;
+
+      border-radius:7px;
+
+      padding:5px 7px;
+
+      font-size:10px;
+    }
+
+
+    .profile-card{
+      padding:16px;
+    }
+
+    .profile-user{
+      display:flex;
+
+      align-items:center;
+
+      gap:11px;
+    }
+
+    .profile-avatar{
+      width:44px;
+      height:44px;
+
+      border-radius:50%;
+
+      background:#eaf4ed;
+
+      display:grid;
+
+      place-items:center;
+
+      color:#6b8275;
+
+      font-size:18px;
+
+      font-weight:800;
+    }
+
+    .profile-user strong{
+      font-size:13px;
+
+      display:block;
+    }
+
+    .profile-user span{
+      font-size:11px;
+
+      color:#8b9690;
+    }
+
+    .profile-role{
+      margin-left:auto;
+
+      background:#def3e4;
+
+      color:#208048;
+
+      border-radius:20px;
+
+      padding:5px 9px;
+
+      font-size:9.5px;
+
+      font-weight:800;
+    }
+
+    .tabs{
+      display:flex;
+
+      gap:7px;
+
+      padding:0 20px 14px;
+
+      flex-wrap:wrap;
+    }
+
+    .tabs button{
+      border:1px solid var(--border);
+
+      background:#fff;
+
+      color:#77847e;
+
+      border-radius:9px;
+
+      padding:8px 13px;
+
+      font-size:12px;
+
+      font-weight:800;
+    }
+
+    .tabs button.active{
+      background:#e8f7ed;
+
+      color:#197443;
+
+      border-color:#c9e7d2;
+    }
+
+    .filter-row{
+      display:flex;
+
+      gap:10px;
+
+      padding:0 20px 16px;
+
+      flex-wrap:wrap;
+    }
+
+    .filter-row input{
+      flex:1;
+
+      min-width:160px;
+
+      border:1px solid var(--border);
+
+      border-radius:10px;
+
+      padding:10px 12px;
+
+      font-size:13px;
+    }
+
+    .filter-row select{
+      border:1px solid var(--border);
+
+      border-radius:10px;
+
+      padding:10px 12px;
+
+      font-size:13px;
+
+      color:#66746d;
+    }
+
+    .nearby-toolbar{
+      margin:14px 20px 0;
+
+      padding:13px 14px;
+
+      border:1px solid #dcefe1;
+
+      background:#f4fbf6;
+
+      border-radius:13px;
+
+      display:flex;
+
+      justify-content:space-between;
+
+      gap:12px;
+
+      align-items:center;
+    }
+
+    .nearby-toolbar strong{
+      font-size:12px;
+    }
+
+    .nearby-toolbar span{
+      display:block;
+
+      color:#829089;
+
+      font-size:10.5px;
+
+      margin-top:3px;
+    }
+
+    .nearby-controls{
+      display:flex;
+
+      gap:7px;
+    }
+
+    .nearby-controls select{
+      border:1px solid #dbe8df;
+
+      background:#fff;
+
+      border-radius:9px;
+
+      padding:8px 10px;
+
+      font-size:11px;
+
+      color:#4e6258;
+    }
+
+    .nearby-controls .small-btn{
+      padding:8px 11px;
+
+      font-size:11px;
+    }
+
+    .fixed-radius-badge{
+      display:inline-flex !important;
+
+      align-items:center;
+
+      gap:6px;
+
+      padding:9px 12px;
+
+      border:1px solid #cfe5d7;
+
+      border-radius:10px;
+
+      background:#fff;
+
+      color:#2b7650 !important;
+
+      font-size:12px !important;
+
+      font-weight:800;
+
+      margin-top:0 !important;
+    }
+
+    .listing-body{
+      padding:4px 16px 20px;
+    }
+
+    .listing-grid{
+      display:grid;
+
+      grid-template-columns:repeat(2,1fr);
+
+      gap:12px;
+    }
+
+    .listing-card{
+      border:1px solid #e7eee9;
+
+      border-radius:14px;
+
+      overflow:hidden;
+
+      background:#fff;
+    }
+
+    .listing-card.CLAIMED{
+      border-color:#f0dcac;
+    }
+
+    .listing-card.PICKED_UP{
+      border-color:#c9d9ee;
+    }
+
+    .listing-card.EXPIRED{
+      opacity:.6;
+    }
+
+    .listing-thumb{
+      height:64px;
+
+      display:grid;
+
+      place-items:center;
+
+      font-size:30px;
+
+      background:
+              linear-gradient(
+                      135deg,
+                      #e5efe7,
+                      #cbdccf
+              );
+    }
+
+    .listing-card.CLAIMED .listing-thumb{
+      background:
+              linear-gradient(
+                      135deg,
+                      #fbeecb,
+                      #f3dba0
+              );
+    }
+
+    .listing-card.PICKED_UP .listing-thumb{
+      background:
+              linear-gradient(
+                      135deg,
+                      #dde9fa,
+                      #c1d7f5
+              );
+    }
+
+    .listing-thumb img{
+      width:100%;
+
+      height:100%;
+
+      object-fit:cover;
+
+      border-radius:12px;
+    }
+
+    .listing-content{
+      padding:12px;
+    }
+
+    .listing-top{
+      display:flex;
+
+      justify-content:space-between;
+
+      align-items:start;
+
+      gap:6px;
+
+      margin-bottom:6px;
+    }
+
+    .listing-card h3{
+      font-size:13.5px;
+
+      font-weight:800;
+
+      white-space:nowrap;
+
+      overflow:hidden;
+
+      text-overflow:ellipsis;
+    }
+
+    .food-badge{
+      font-size:9.5px;
+
+      font-weight:800;
+
+      padding:3px 8px;
+
+      border-radius:20px;
+
+      background:var(--green-light);
+
+      color:var(--green-dark);
+
+      white-space:nowrap;
+    }
+
+    .info-row{
+      display:flex;
+
+      align-items:center;
+
+      gap:6px;
+
+      font-size:11px;
+
+      color:#7a857f;
+
+      margin-top:4px;
+    }
+
+    .info-icon{
+      font-size:12px;
+
+      flex:0 0 auto;
+    }
+
+    .status{
+      display:inline-block;
+
+      margin-top:8px;
+
+      padding:3px 9px;
+
+      border-radius:20px;
+
+      font-size:9.5px;
+
+      font-weight:800;
+
+      background:#e5f6ea;
+
+      color:#27824b;
+    }
+
+    .status.CLAIMED{
+      background:var(--amber-bg);
+
+      color:var(--amber);
+    }
+
+    .status.PICKED_UP{
+      background:var(--blue-bg);
+
+      color:var(--blue);
+    }
+
+    .status.EXPIRED{
+      background:#e6e9e9;
+
+      color:#556;
+    }
+
+    .listing-actions{
+      margin-top:10px;
+
+      display:flex;
+
+      gap:6px;
+
+      flex-wrap:wrap;
+    }
+
+    .small{
+      border:0;
+
+      border-radius:8px;
+
+      padding:7px 11px;
+
+      font-size:11px;
+
+      font-weight:800;
+
+      background:var(--green);
+
+      color:#fff;
+    }
+
+    .small.ghost{
+      background:#f1f5f2;
+
+      color:#3d4a43;
+    }
+
+    .small.danger{
+      background:var(--red-bg);
+
+      color:var(--red);
+    }
+
+    .distance-badge{
+      display:inline-block;
+
+      margin-left:5px;
+
+      background:#e9f7ed;
+
+      color:#247b49;
+
+      border-radius:10px;
+
+      padding:3px 7px;
+
+      font-size:9.5px;
+
+      font-weight:800;
+    }
+
+    .pickup-waiting{
+      display:inline-flex;
+
+      align-items:center;
+
+      padding:8px 10px;
+
+      border-radius:9px;
+
+      background:#f4f7f5;
+
+      color:#718079;
+
+      font-size:11px;
+
+      font-weight:700;
+    }
+
+    .pickup-status{
+      margin:8px 0;
+
+      padding:8px 10px;
+
+      border-radius:10px;
+
+      font-size:13px;
+
+      font-weight:700;
+    }
+
+    .pickup-status.waiting{
+      background:#fff7df;
+
+      color:#8a5a00;
+    }
+
+    .pickup-status.completed{
+      background:#e8f7ed;
+
+      color:#168447;
+    }
+
+
+    .empty-card{
+      grid-column:1/-1;
+
+      text-align:center;
+
+      padding:32px;
+
+      color:#7c8781;
+
+      font-size:13px;
+
+      background:#fff;
+
+      border:1px dashed #cbd8d0;
+
+      border-radius:14px;
+    }
+
+    .footer{
+      text-align:center;
+
+      color:#8c9892;
+
+      font-size:11.5px;
+
+      margin-top:22px;
+
+      padding-bottom:8px;
+    }
+
+
+    .admin-stats-grid{
+      padding:16px 20px 20px;
+
+      display:grid;
+
+      grid-template-columns:repeat(4,1fr);
+
+      gap:10px;
+    }
+
+    .admin-stat{
+      border:1px solid #e3ece6;
+
+      background:#fbfdfc;
+
+      border-radius:13px;
+
+      padding:14px;
+    }
+
+    .admin-stat span{
+      display:block;
+
+      color:#7d8a83;
+
+      font-size:10.5px;
+
+      font-weight:700;
+    }
+
+    .admin-stat strong{
+      display:block;
+
+      margin-top:5px;
+
+      font-size:22px;
+
+      color:var(--green-dark);
+    }
+
+
+    .notification-panel{
+      position:fixed;
+
+      right:28px;
+
+      top:78px;
+
+      width:min(380px,calc(100vw - 36px));
+
+      max-height:520px;
+
+      background:#fff;
+
+      border:1px solid var(--border);
+
+      border-radius:16px;
+
+      box-shadow:
+              0 20px 55px rgba(25,60,40,.18);
+
+      z-index:9998;
+
+      overflow:hidden;
+    }
+
+    .notification-panel-head{
+      display:flex;
+
+      justify-content:space-between;
+
+      align-items:center;
+
+      padding:14px 16px;
+
+      border-bottom:1px solid var(--border);
+
+      background:#fff;
+    }
+
+    .notification-panel-head strong{
+      font-size:14px;
+    }
+
+    .notification-panel-head button{
+      border:0;
+
+      background:transparent;
+
+      font-size:22px;
+
+      color:#829089;
+
+      width:30px;
+
+      height:30px;
+
+      border-radius:8px;
+    }
+
+    .notification-panel-head button:hover{
+      background:#f3f7f4;
+
+      color:var(--text);
+    }
+
+    #notificationList{
+      max-height:450px;
+
+      overflow-y:auto;
+    }
+
+    .notification-item{
+      display:flex;
+
+      align-items:flex-start;
+
+      gap:10px;
+
+      padding:13px 16px;
+
+      border-bottom:1px solid #edf2ee;
+
+      font-size:12px;
+
+      cursor:pointer;
+
+      transition:
+              background .15s ease;
+    }
+
+    .notification-item:hover{
+      background:#f8fbf9;
+    }
+
+    .notification-item.unread{
+      background:#f2faf5;
+    }
+
+    .notification-icon{
+      width:34px;
+      height:34px;
+
+      flex:0 0 34px;
+
+      display:grid;
+
+      place-items:center;
+
+      background:#e8f7ed;
+
+      border-radius:10px;
+
+      font-size:16px;
+    }
+
+    .notification-content{
+      min-width:0;
+
+      flex:1;
+    }
+
+    .notification-title{
+      font-size:12.5px;
+
+      font-weight:800;
+
+      color:var(--text);
+
+      margin-bottom:3px;
+    }
+
+    .notification-message{
+      color:#718079;
+
+      line-height:1.45;
+    }
+
+    .notification-time{
+      color:#a0aaa5;
+
+      font-size:10px;
+
+      margin-top:5px;
+    }
+
+    .notification-unread-dot{
+      width:7px;
+      height:7px;
+
+      flex:0 0 7px;
+
+      margin-top:5px;
+
+      border-radius:50%;
+
+      background:var(--green);
+    }
+
+    .notification-empty{
+      padding:28px 16px;
+
+      text-align:center;
+
+      color:#8a9690;
+
+      font-size:12px;
+    }
+
+
+    #notificationToast{
+      animation:
+              notificationToastIn .2s ease-out;
+    }
+
+    #notificationToast .toast-icon{
+      width:36px;
+      height:36px;
+
+      flex:0 0 36px;
+
+      display:grid;
+
+      place-items:center;
+
+      background:#e8f7ed;
+
+      border-radius:10px;
+
+      font-size:18px;
+    }
+
+    #notificationToast .toast-content{
+      display:flex;
+
+      flex-direction:column;
+
+      gap:3px;
+
+      min-width:0;
+    }
+
+    #notificationToast .toast-content strong{
+      font-size:13px;
+
+      color:var(--text);
+    }
+
+    #notificationToast .toast-content span{
+      font-size:11px;
+
+      line-height:1.4;
+
+      color:#718079;
+    }
+
+    #notificationToast button{
+      border:0;
+
+      background:transparent;
+
+      color:#89958f;
+
+      font-size:18px;
+
+      padding:2px 4px;
+
+      margin-left:auto;
+    }
+
+    @keyframes notificationToastIn{
+      from{
+        opacity:0;
+
+        transform:
+                translateY(10px);
+      }
+
+      to{
+        opacity:1;
+
+        transform:
+                translateY(0);
+      }
+    }
+
+
+    @media(max-width:1100px){
+
+      .sidebar{
+        width:210px;
+
+        flex-basis:210px;
+      }
+
+      .dashboard-grid{
+        grid-template-columns:1fr;
+      }
+
+      .right-col{
+        display:grid;
+
+        grid-template-columns:1fr 1fr;
+      }
+
+      .profile-card{
+        grid-column:1/-1;
+      }
+
+    }
+
+
+    @media(max-width:900px){
+
+      .admin-stats-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .nearby-toolbar{
+        align-items:flex-start;
+
+        flex-direction:column;
+      }
+
+      .dashboard-grid{
+        grid-template-columns:1fr;
+      }
+
+      .right-col{
+        display:grid;
+
+        grid-template-columns:1fr 1fr;
+      }
+
+      .profile-card{
+        grid-column:1/-1;
+      }
+
+    }
+
+
+    @media(max-width:760px){
+
+      .app-shell{
+        width:100%;
+
+        margin:0;
+
+        border-radius:0;
+
+        min-height:100vh;
+      }
+
+      .sidebar{
+        display:none;
+      }
+
+      .content{
+        padding:14px;
+      }
+
+      .hero h1{
+        font-size:26px;
+      }
+
+      .dashboard-grid{
+        display:block;
+      }
+
+      .right-col{
+        display:flex;
+
+        margin-top:18px;
+      }
+
+      .post-grid,
+      .form-grid{
+        grid-template-columns:1fr;
+      }
+
+      .post-grid .full{
+        grid-column:auto;
+      }
+
+      .listing-grid{
+        grid-template-columns:1fr;
+      }
+
+      .user-name{
+        display:none;
+      }
+
+    }
+
+
+    @media(max-width:620px){
+
+      .auth-shell{
+        padding:25px 18px;
+
+        margin:20px auto;
+      }
+
+      .topbar{
+        padding:10px 14px;
+
+        gap:9px;
+      }
+
+      .live{
+        margin-right:auto;
+      }
+
+      .admin-stats-grid{
+        grid-template-columns:1fr 1fr;
+      }
+
+      .nearby-controls{
+        width:100%;
+      }
+
+      .nearby-controls select,
+      .nearby-controls button{
+        flex:1;
+      }
+
+      .notification-panel{
+        right:18px;
+
+        top:70px;
+
+        width:calc(100vw - 36px);
+      }
+
+    }
+
+
+    @media(max-width:480px){
+
+      .hero{
+        padding:22px;
+
+        min-height:auto;
+      }
+
+      .hero-art{
+        font-size:36px;
+      }
+
+      .hero-actions{
+        width:100%;
+      }
+
+      .hero-btn{
+        flex:1;
+      }
+
+      .date-grid{
+        grid-template-columns:1fr;
+      }
+
+      .food-types{
+        grid-template-columns:1fr;
+      }
+
+      .admin-stats-grid{
+        grid-template-columns:1fr 1fr;
+      }
+
+    }
+
+
+    #notificationList::-webkit-scrollbar{
+      width:6px;
+    }
+
+    #notificationList::-webkit-scrollbar-track{
+      background:#f5f8f6;
+    }
+
+    #notificationList::-webkit-scrollbar-thumb{
+      background:#cbd8d0;
+
+      border-radius:10px;
+    }
+
+  </style>
 </head>
+
+
 <body>
+
 
 <div class="app-shell">
 
   <aside class="sidebar">
+
     <div class="brand">
-      <div class="brand-icon">🌿</div>
-      <div>
-        <div class="brand-name">Food Waste Reducer</div>
-        <div class="brand-sub">GOOD FOOD &bull; LESS WASTE</div>
+
+      <div class="brand-icon">
+        🌿
       </div>
+
+      <div>
+
+        <div class="brand-name">
+          Food Waste Reducer
+        </div>
+
+        <div class="brand-sub">
+          GOOD FOOD &bull; LESS WASTE
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="nav-title">Menu</div>
+
+    <div class="nav-title">
+      Menu
+    </div>
+
+
     <nav class="side-nav">
-      <button class="side-link active" type="button" onclick="window.scrollTo({top:0,behavior:'smooth'})">
-        <span class="nav-icon">🏠</span> Home
+
+      <button
+              class="side-link active"
+              type="button"
+              onclick="window.scrollTo({top:0,behavior:'smooth'})"
+      >
+        <span class="nav-icon">🏠</span>
+        Home
       </button>
-      <button class="side-link" type="button" onclick="document.getElementById('postCard')?.scrollIntoView({behavior:'smooth'})">
-        <span class="nav-icon">🎁</span> Share Food
+
+
+      <button
+              class="side-link"
+              type="button"
+              onclick="document.getElementById('postCard')?.scrollIntoView({behavior:'smooth'})"
+      >
+        <span class="nav-icon">🎁</span>
+        Share Food
       </button>
-      <button class="side-link" type="button" onclick="document.getElementById('receiverSection')?.scrollIntoView({behavior:'smooth'})">
-        <span class="nav-icon">🔍</span> Find Food
+
+
+      <button
+              class="side-link"
+              type="button"
+              onclick="document.getElementById('receiverSection')?.scrollIntoView({behavior:'smooth'})"
+      >
+        <span class="nav-icon">🔍</span>
+        Find Food
       </button>
-      <button class="side-link" type="button" onclick="document.getElementById('rewardsCard')?.scrollIntoView({behavior:'smooth'})">
-        <span class="nav-icon">⭐</span> Rewards
+
+
+      <button
+              class="side-link"
+              type="button"
+              onclick="document.getElementById('rewardsCard')?.scrollIntoView({behavior:'smooth'})"
+      >
+        <span class="nav-icon">⭐</span>
+        Rewards
       </button>
-      <button class="side-link" type="button" onclick="document.getElementById('donorListingsCard')?.scrollIntoView({behavior:'smooth'})">
-        <span class="nav-icon">📋</span> My Listings
+
+
+      <button
+              class="side-link"
+              type="button"
+              onclick="document.getElementById('donorListingsCard')?.scrollIntoView({behavior:'smooth'})"
+      >
+        <span class="nav-icon">📋</span>
+        My Listings
       </button>
-      <button id="adminNav" class="side-link" type="button" hidden onclick="document.getElementById('adminCard')?.scrollIntoView({behavior:'smooth'})"><span class="nav-icon">👑</span> Admin Dashboard</button>
-      <button class="side-link" type="button" onclick="document.getElementById('profileCard')?.scrollIntoView({behavior:'smooth'})">
-        <span class="nav-icon">👤</span> My Profile
+
+
+      <button
+              id="adminNav"
+              class="side-link"
+              type="button"
+              hidden
+              onclick="document.getElementById('adminCard')?.scrollIntoView({behavior:'smooth'})"
+      >
+        <span class="nav-icon">👑</span>
+        Admin Dashboard
       </button>
+
+
+      <button
+              class="side-link"
+              type="button"
+              onclick="document.getElementById('profileCard')?.scrollIntoView({behavior:'smooth'})"
+      >
+        <span class="nav-icon">👤</span>
+        My Profile
+      </button>
+
     </nav>
 
+
     <div class="side-note">
-      <strong>🌱 Together for a greener tomorrow</strong>
+
+      <strong>
+        🌱 Together for a greener tomorrow
+      </strong>
+
       Every shared meal helps reduce food waste and supports your community.
+
     </div>
+
   </aside>
 
   <div class="main-wrap">
 
-    <header class="topbar" id="userBar" hidden>
-      <div id="live" class="live"><span class="live-dot"></span> offline</div>
-      <button id="notificationBtn" class="notification-btn" type="button" title="Notifications">🔔 <span id="notificationCount">0</span></button>
-      <div class="mini-profile">
-        <div class="avatar" id="avatarInitial">U</div>
-        <div class="user-name">
-          <span id="userName">User</span>
-          <small>Food Waste Reducer</small>
-        </div>
+
+    <header
+            class="topbar"
+            id="userBar"
+            hidden
+    >
+
+      <div
+              id="live"
+              class="live"
+      >
+        <span class="live-dot"></span>
+        offline
       </div>
-      <span id="userRoleBadge" class="role-badge">DONOR</span>
-      <button id="logoutBtn" class="logout-btn" type="button">Log out</button>
+
+
+      <!-- NOTIFICATION BUTTON -->
+
+      <button
+              id="notificationBtn"
+              class="notification-btn"
+              type="button"
+              title="Notifications"
+      >
+        🔔
+        <span id="notificationCount">
+                    0
+                </span>
+      </button>
+
+
+      <div class="mini-profile">
+
+        <div
+                class="avatar"
+                id="avatarInitial"
+        >
+          U
+        </div>
+
+
+        <div class="user-name">
+
+                    <span id="userName">
+                        User
+                    </span>
+
+          <small>
+            Food Waste Reducer
+          </small>
+
+        </div>
+
+      </div>
+
+
+      <span
+              id="userRoleBadge"
+              class="role-badge"
+      >
+                DONOR
+            </span>
+
+
+      <button
+              id="logoutBtn"
+              class="logout-btn"
+              type="button"
+      >
+        Log out
+      </button>
+
     </header>
 
+
     <main class="content">
+>
 
-      <section id="authCard" class="auth-shell">
-        <div class="auth-logo">🌿</div>
-        <h2 id="authHeading" class="auth-heading">Log in</h2>
-        <p id="authSubheading" class="auth-sub">Log in to post or claim food. New here? Register below.</p>
+      <section
+              id="authCard"
+              class="auth-shell"
+      >
 
-        <div id="authRoleField" class="auth-role" hidden>
-          <label><input type="radio" name="authRole" value="DONOR" checked><span>🍱 Donor</span></label>
-          <label><input type="radio" name="authRole" value="RECEIVER"><span>🤝 Receiver</span></label>
+        <div class="auth-logo">
+          🌿
         </div>
 
-        <div id="authNameField" class="auth-field" hidden>
-          <label>Full name</label>
-          <input id="authName" type="text" placeholder="Your full name">
+
+        <h2
+                id="authHeading"
+                class="auth-heading"
+        >
+          Log in
+        </h2>
+
+
+        <p
+                id="authSubheading"
+                class="auth-sub"
+        >
+          Log in to post or claim food. New here? Register below.
+        </p>
+
+
+        <!-- ROLE -->
+
+        <div
+                id="authRoleField"
+                class="auth-role"
+                hidden
+        >
+
+          <label>
+
+            <input
+                    type="radio"
+                    name="authRole"
+                    value="DONOR"
+                    checked
+            >
+
+            <span>
+                            🍱 Donor
+                        </span>
+
+          </label>
+
+
+          <label>
+
+            <input
+                    type="radio"
+                    name="authRole"
+                    value="RECEIVER"
+            >
+
+            <span>
+                            🤝 Receiver
+                        </span>
+
+          </label>
+
         </div>
-        <div id="authPhoneField" class="auth-field" hidden>
-          <label>Phone number</label>
-          <input id="authPhone" type="text" maxlength="10" placeholder="10-digit number">
+
+
+        <!-- NAME -->
+
+        <div
+                id="authNameField"
+                class="auth-field"
+                hidden
+        >
+
+          <label>
+            Full name
+          </label>
+
+          <input
+                  id="authName"
+                  type="text"
+                  placeholder="Your full name"
+          >
+
         </div>
+
+
+        <!-- PHONE -->
+
+        <div
+                id="authPhoneField"
+                class="auth-field"
+                hidden
+        >
+
+          <label>
+            Phone number
+          </label>
+
+          <input
+                  id="authPhone"
+                  type="text"
+                  maxlength="10"
+                  placeholder="10-digit number"
+          >
+
+        </div>
+
+
+        <!-- EMAIL -->
+
         <div class="auth-field">
-          <label>Email</label>
-          <input id="authEmail" type="email" placeholder="you@example.com">
-        </div>
-        <div class="auth-field">
-          <label>Password</label>
-          <input id="authPassword" type="password" placeholder="At least 6 characters">
+
+          <label>
+            Email
+          </label>
+
+          <input
+                  id="authEmail"
+                  type="email"
+                  placeholder="you@example.com"
+          >
+
         </div>
 
-        <button id="authSubmit" class="primary auth-submit" type="button">Log in</button>
+
+        <!-- PASSWORD -->
+
+        <div class="auth-field">
+
+          <label>
+            Password
+          </label>
+
+          <input
+                  id="authPassword"
+                  type="password"
+                  placeholder="At least 6 characters"
+          >
+
+        </div>
+
+
+        <button
+                id="authSubmit"
+                class="primary auth-submit"
+                type="button"
+        >
+          Log in
+        </button>
+
+
         <div class="auth-toggle">
-          <button id="authToggle" type="button">New here? Register</button>
+
+          <button
+                  id="authToggle"
+                  type="button"
+          >
+            New here? Register
+          </button>
+
         </div>
-        <div id="authMessage" class="msg"></div>
+
+
+        <div
+                id="authMessage"
+                class="msg"
+        ></div>
+
       </section>
 
-      <section id="appContent" hidden>
+
+      <section
+              id="appContent"
+              hidden
+      >
 
         <section class="hero">
+
           <div>
-            <div class="eyebrow">🌍 Together for a greener tomorrow</div>
-            <h1>Share Food.<br><span>Reduce Food Waste.</span></h1>
-            <p>Turn surplus food into meaningful meals and help build a healthier, kinder community.</p>
-            <div class="hero-actions">
-              <button class="hero-btn primary" type="button" onclick="document.getElementById('postCard')?.scrollIntoView({behavior:'smooth'})">Share food →</button>
-              <button class="hero-btn secondary" type="button" onclick="document.getElementById('receiverSection')?.scrollIntoView({behavior:'smooth'})">🔍 Find food</button>
+
+            <div class="eyebrow">
+              🌍 Together for a greener tomorrow
             </div>
+
+
+            <h1>
+              Share Food.<br>
+              <span>
+                                Reduce Food Waste.
+                            </span>
+            </h1>
+
+
+            <p>
+              Turn surplus food into meaningful meals and help build a healthier, kinder community.
+            </p>
+
+
+            <div class="hero-actions">
+
+              <button
+                      class="hero-btn primary"
+                      type="button"
+                      onclick="document.getElementById('postCard')?.scrollIntoView({behavior:'smooth'})"
+              >
+                Share food →
+              </button>
+
+
+              <button
+                      class="hero-btn secondary"
+                      type="button"
+                      onclick="document.getElementById('receiverSection')?.scrollIntoView({behavior:'smooth'})"
+              >
+                🔍 Find food
+              </button>
+
+            </div>
+
           </div>
-          <div class="hero-art" aria-hidden="true">🥕🍎🥦🍊</div>
+
+
+          <div
+                  class="hero-art"
+                  aria-hidden="true"
+          >
+            🥕🍎🥦🍊
+          </div>
+
         </section>
 
-        <div id="expiringBanner" hidden>
-          <strong>⏰ Expiring soon</strong>
-          <div id="expiringScroll"></div>
+
+
+
+        <div
+                id="expiringBanner"
+                hidden
+        >
+
+          <strong>
+            ⏰ Expiring soon
+          </strong>
+
+          <div
+                  id="expiringScroll"
+          ></div>
+
         </div>
 
         <div class="dashboard-grid">
 
+
           <div class="left-col">
 
-            <section id="postCard" class="card" hidden>
+            <section
+                    id="postCard"
+                    class="card"
+                    hidden
+            >
+
               <div class="card-head">
+
                 <div>
-                  <div class="card-title"><span class="card-title-icon">🎁</span>Post extra food</div>
-                  <div class="card-sub">Add the details of the food you want to share.</div>
+
+                  <div class="card-title">
+
+                                        <span class="card-title-icon">
+                                            🎁
+                                        </span>
+
+                    Post extra food
+
+                  </div>
+
+
+                  <div class="card-sub">
+                    Add the details of the food you want to share.
+                  </div>
+
                 </div>
+
               </div>
+
 
               <form id="foodForm">
+
                 <div class="post-grid">
+
+
+                  <!-- FOOD NAME -->
+
                   <div class="field">
-                    <label for="title">Food name</label>
-                    <input id="title" type="text" placeholder="e.g. Biryani, Rice, Roti..." required>
+
+                    <label for="title">
+                      Food name
+                    </label>
+
+                    <input
+                            id="title"
+                            type="text"
+                            placeholder="e.g. Biryani, Rice, Roti..."
+                            required
+                    >
+
                   </div>
+
+
+                  <!-- SERVINGS -->
+
                   <div class="field">
-                    <label for="servings">Number of servings</label>
-                    <input id="servings" type="number" min="1" placeholder="e.g. 10" required>
+
+                    <label for="servings">
+                      Number of servings
+                    </label>
+
+                    <input
+                            id="servings"
+                            type="number"
+                            min="1"
+                            placeholder="e.g. 10"
+                            required
+                    >
+
                   </div>
+
+
+                  <!-- IMAGE -->
 
                   <div class="field full">
-                    <label for="imageUrl">Food image URL <span class="optional">(optional)</span></label>
-                    <input id="imageUrl" type="url" placeholder="https://example.com/your-food-image.jpg">
+
+                    <label for="imageUrl">
+                      Food image URL
+                      <span class="optional">
+                                                (optional)
+                                            </span>
+                    </label>
+
+                    <input
+                            id="imageUrl"
+                            type="url"
+                            placeholder="https://example.com/your-food-image.jpg"
+                    >
+
                   </div>
 
+
+                  <!-- LOCATION -->
+
                   <div class="field">
-                    <label for="pickupLocation">Pickup location</label>
+
+                    <label for="pickupLocation">
+                      Pickup location
+                    </label>
+
+
                     <div class="location-row">
-                      <input id="pickupLocation" type="text" placeholder="e.g. Dilshad Garden" required>
-                      <button id="locationButton" class="small-btn" type="button" title="Detect location again">&#8635;</button>
+
+                      <input
+                              id="pickupLocation"
+                              type="text"
+                              placeholder="e.g. Dilshad Garden"
+                              required
+                      >
+
+
+                      <button
+                              id="locationButton"
+                              class="small-btn"
+                              type="button"
+                              title="Detect location again"
+                      >
+                        &#8635;
+                      </button>
+
                     </div>
-                    <div id="locationStatus" class="location-box">📍 Detecting your location...</div>
+
+
+                    <div
+                            id="locationStatus"
+                            class="location-box"
+                    >
+                      📍 Detecting your location...
+                    </div>
+
                   </div>
+
+
+                  <!-- FOOD TYPE -->
 
                   <div class="field">
-                    <label>Food type</label>
+
+                    <label>
+                      Food type
+                    </label>
+
+
                     <div class="food-types">
+
+
                       <div class="food-option">
-                        <input type="radio" name="foodType" id="veg" value="VEG" checked required>
-                        <label class="food-label" for="veg">🥗 Vegetarian</label>
+
+                        <input
+                                type="radio"
+                                name="foodType"
+                                id="veg"
+                                value="VEG"
+                                checked
+                                required
+                        >
+
+                        <label
+                                class="food-label"
+                                for="veg"
+                        >
+                          🥗 Vegetarian
+                        </label>
+
                       </div>
+
+
                       <div class="food-option">
-                        <input type="radio" name="foodType" id="nonVeg" value="NON_VEG">
-                        <label class="food-label" for="nonVeg">🍗 Non-vegetarian</label>
+
+                        <input
+                                type="radio"
+                                name="foodType"
+                                id="nonVeg"
+                                value="NON_VEG"
+                        >
+
+                        <label
+                                class="food-label"
+                                for="nonVeg"
+                        >
+                          🍗 Non-vegetarian
+                        </label>
+
                       </div>
+
+
                     </div>
+
                   </div>
 
+
+                  <!-- EXPIRY -->
+
                   <div class="field full">
-                    <label>Best before date &amp; time</label>
+
+                    <label>
+                      Best before date &amp; time
+                    </label>
+
+
                     <div class="date-grid">
-                      <select id="expiryDay" required><option value="">Day</option></select>
-                      <select id="expiryMonth" required>
-                        <option value="">Month</option>
-                        <option value="1">Jan</option><option value="2">Feb</option><option value="3">Mar</option>
-                        <option value="4">Apr</option><option value="5">May</option><option value="6">Jun</option>
-                        <option value="7">Jul</option><option value="8">Aug</option><option value="9">Sep</option>
-                        <option value="10">Oct</option><option value="11">Nov</option><option value="12">Dec</option>
+
+
+                      <select
+                              id="expiryDay"
+                              required
+                      >
+                        <option value="">
+                          Day
+                        </option>
                       </select>
-                      <input id="expiryTime" type="time" required>
+
+
+                      <select
+                              id="expiryMonth"
+                              required
+                      >
+
+                        <option value="">
+                          Month
+                        </option>
+
+                        <option value="1">
+                          Jan
+                        </option>
+
+                        <option value="2">
+                          Feb
+                        </option>
+
+                        <option value="3">
+                          Mar
+                        </option>
+
+                        <option value="4">
+                          Apr
+                        </option>
+
+                        <option value="5">
+                          May
+                        </option>
+
+                        <option value="6">
+                          Jun
+                        </option>
+
+                        <option value="7">
+                          Jul
+                        </option>
+
+                        <option value="8">
+                          Aug
+                        </option>
+
+                        <option value="9">
+                          Sep
+                        </option>
+
+                        <option value="10">
+                          Oct
+                        </option>
+
+                        <option value="11">
+                          Nov
+                        </option>
+
+                        <option value="12">
+                          Dec
+                        </option>
+
+                      </select>
+
+
+                      <input
+                              id="expiryTime"
+                              type="time"
+                              required
+                      >
+
                     </div>
+
                   </div>
 
-                  <div class="field full">
-                    <label for="description">Additional notes</label>
-                    <input id="description" type="text" placeholder="Any additional information...">
-                  </div>
+
+                  <!-- DESCRIPTION -->
 
                   <div class="field full">
-                    <div id="message" class="msg"></div>
+
+                    <label for="description">
+                      Additional notes
+                    </label>
+
+                    <input
+                            id="description"
+                            type="text"
+                            placeholder="Any additional information..."
+                    >
+
+                  </div>
+
+
+                  <!-- SUBMIT -->
+
+                  <div class="field full">
+
+                    <div
+                            id="message"
+                            class="msg"
+                    ></div>
+
+
                     <div class="submit-area">
-                      <button id="submitButton" class="primary" type="submit" disabled>Post food →</button>
+
+                      <button
+                              id="submitButton"
+                              class="primary"
+                              type="submit"
+                              disabled
+                      >
+                        Post food →
+                      </button>
+
                     </div>
+
                   </div>
+
                 </div>
+
               </form>
+
             </section>
 
-            <section id="donorListingsCard" class="card" hidden>
+
+
+
+            <section
+                    id="donorListingsCard"
+                    class="card"
+                    hidden
+            >
+
               <div class="card-head">
+
                 <div>
-                  <div class="card-title"><span class="card-title-icon">🍽️</span>My posted food</div>
-                  <div class="card-sub">Track what you've posted and confirm pickups here.</div>
+
+                  <div class="card-title">
+
+                                        <span class="card-title-icon">
+                                            🍽️
+                                        </span>
+
+                    My posted food
+
+                  </div>
+
+
+                  <div class="card-sub">
+                    Track what you've posted and confirm pickups here.
+                  </div>
+
                 </div>
+
               </div>
-              <div id="donorListingContainer" class="listing-body"></div>
+
+
+              <div
+                      id="donorListingContainer"
+                      class="listing-body"
+              ></div>
+
             </section>
 
-            <section id="receiverSection" class="card" hidden>
+            <section
+                    id="receiverSection"
+                    class="card"
+                    hidden
+            >
+
               <div class="card-head">
+
                 <div>
-                  <div class="card-title"><span class="card-title-icon">🔎</span>Find available food</div>
-                  <div class="card-sub">Discover food shared by donors near you.</div>
+
+                  <div class="card-title">
+
+                                        <span class="card-title-icon">
+                                            🔎
+                                        </span>
+
+                    Find available food
+
+                  </div>
+
+
+                  <div class="card-sub">
+                    Discover food shared by donors near you.
+                  </div>
+
                 </div>
+
               </div>
 
-              <div class="tabs" id="tabs">
-                <button class="active" data-f="AVAILABLE" type="button">Available</button>
-                <button data-f="MINE" type="button">My claims</button>
-                <button data-f="HISTORY" type="button">History</button>
+
+              <!-- TABS -->
+
+              <div
+                      class="tabs"
+                      id="tabs"
+              >
+
+                <button
+                        class="active"
+                        data-f="AVAILABLE"
+                        type="button"
+                >
+                  Available
+                </button>
+
+
+                <button
+                        data-f="MINE"
+                        type="button"
+                >
+                  My claims
+                </button>
+
+
+                <button
+                        data-f="HISTORY"
+                        type="button"
+                >
+                  History
+                </button>
+
               </div>
+
+
+              <!-- NEARBY -->
 
               <div class="nearby-toolbar">
+
                 <div>
-                  <strong>📍 Nearby food</strong>
-                  <span id="nearbyStatus">Use your location to sort food by distance.</span>
+
+                  <strong>
+                    📍 Nearby food
+                  </strong>
+
+                  <span id="nearbyStatus">
+                                        Use your location to sort food by distance.
+                                    </span>
+
                 </div>
+
+
                 <div class="nearby-controls">
-                  <span class="fixed-radius-badge">📍 Within 10 km</span>
+
+                                    <span class="fixed-radius-badge">
+                                        📍 Within 10 km
+                                    </span>
+
                 </div>
+
               </div>
+
+
+              <!-- FILTER -->
 
               <div class="filter-row">
-                <input id="listingSearch" type="search" placeholder="Search food or location...">
+
+                <input
+                        id="listingSearch"
+                        type="search"
+                        placeholder="Search food or location..."
+                >
+
+
                 <select id="listingFilter">
-                  <option value="">All food</option>
-                  <option value="VEG">Vegetarian</option>
-                  <option value="NON_VEG">Non-vegetarian</option>
+
+                  <option value="">
+                    All food
+                  </option>
+
+                  <option value="VEG">
+                    Vegetarian
+                  </option>
+
+                  <option value="NON_VEG">
+                    Non-vegetarian
+                  </option>
+
                 </select>
+
               </div>
 
-              <div id="listingContainer" class="listing-body"></div>
+
+
+
+              <div
+                      id="listingContainer"
+                      class="listing-body"
+              ></div>
+
             </section>
 
-          </div>
+          </div>->
 
           <div class="right-col">
 
-            <section id="impactCard" class="card" hidden>
+
+            <section
+                    id="impactCard"
+                    class="card"
+                    hidden
+            >
+
               <div class="card-head">
+
                 <div>
-                  <div class="card-title"><span class="card-title-icon">🌿</span>Your impact</div>
-                  <div class="card-sub">Making a difference, one meal at a time.</div>
+
+                  <div class="card-title">
+
+                                        <span class="card-title-icon">
+                                            🌿
+                                        </span>
+
+                    Your impact
+
+                  </div>
+
+
+                  <div class="card-sub">
+                    Making a difference, one meal at a time.
+                  </div>
+
                 </div>
+
               </div>
+
+
               <div class="impact-grid">
-                <div class="impact-stat"><div class="i">🍱</div><strong id="statPosted">0</strong><span>Food shared</span></div>
-                <div class="impact-stat"><div class="i">🤝</div><strong id="statClaimed">0</strong><span>Meals claimed</span></div>
-                <div class="impact-stat"><div class="i">🌿</div><strong id="statPickedUp">0</strong><span>Meals saved</span></div>
-                <div class="impact-stat"><div class="i">⭐</div><strong id="statPoints">0</strong><span>Reward points</span></div>
-                <div class="impact-stat"><div class="i">♻️</div><strong id="statExpired">0</strong><span>Listings expired</span></div>
-                <div class="impact-stat"><div class="i">🌎</div><strong id="statKgSaved">0</strong><span>Est. kg saved</span></div>
-              </div>
-            </section>
 
-            <section id="rewardsCard" class="card" hidden>
-              <div class="card-head">
-                <div>
-                  <div class="card-title"><span class="card-title-icon">🎁</span>Rewards</div>
-                  <div class="card-sub">Earn points. Unlock rewards.</div>
+
+                <div class="impact-stat">
+
+                  <div class="i">
+                    🍱
+                  </div>
+
+                  <strong id="statPosted">
+                    0
+                  </strong>
+
+                  <span>
+                                        Food shared
+                                    </span>
+
                 </div>
-              </div>
-              <div id="rewardsContainer" class="rewards">
-                <div class="empty-card">Loading rewards...</div>
-              </div>
-              <div class="reward-history-head">Your redeemed rewards</div>
-              <div id="rewardHistory" class="reward-history"><div class="empty-card">No redeemed rewards yet.</div></div>
-            </section>
 
-            <section id="adminCard" class="card" hidden>
-              <div class="card-head">
-                <div>
-                  <div class="card-title"><span class="card-title-icon">👑</span>Admin dashboard</div>
-                  <div class="card-sub">Live overview of users, food listings and impact.</div>
+
+                <div class="impact-stat">
+
+                  <div class="i">
+                    🤝
+                  </div>
+
+                  <strong id="statClaimed">
+                    0
+                  </strong>
+
+                  <span>
+                                        Meals claimed
+                                    </span>
+
                 </div>
+
+
+                <div class="impact-stat">
+
+                  <div class="i">
+                    🌿
+                  </div>
+
+                  <strong id="statPickedUp">
+                    0
+                  </strong>
+
+                  <span>
+                                        Meals saved
+                                    </span>
+
+                </div>
+
+
+                <div class="impact-stat">
+
+                  <div class="i">
+                    ⭐
+                  </div>
+
+                  <strong id="statPoints">
+                    0
+                  </strong>
+
+                  <span>
+                                        Reward points
+                                    </span>
+
+                </div>
+
+
+                <div class="impact-stat">
+
+                  <div class="i">
+                    ♻️
+                  </div>
+
+                  <strong id="statExpired">
+                    0
+                  </strong>
+
+                  <span>
+                                        Listings expired
+                                    </span>
+
+                </div>
+
+
+                <div class="impact-stat">
+
+                  <div class="i">
+                    🌎
+                  </div>
+
+                  <strong id="statKgSaved">
+                    0
+                  </strong>
+
+                  <span>
+                                        Est. kg saved
+                                    </span>
+
+                </div>
+
+
               </div>
-              <div id="adminStatsGrid" class="admin-stats-grid">
-                <div class="admin-stat"><span>👥 Users</span><strong id="adminUsers">0</strong></div>
-                <div class="admin-stat"><span>🍱 Listings</span><strong id="adminListings">0</strong></div>
-                <div class="admin-stat"><span>📦 Picked up</span><strong id="adminPicked">0</strong></div>
-                <div class="admin-stat"><span>🌿 Servings saved</span><strong id="adminSaved">0</strong></div>
-                <div class="admin-stat"><span>🟢 Available</span><strong id="adminAvailable">0</strong></div>
-                <div class="admin-stat"><span>🟡 Claimed</span><strong id="adminClaimed">0</strong></div>
-                <div class="admin-stat"><span>👨‍🍳 Donors</span><strong id="adminDonors">0</strong></div>
-                <div class="admin-stat"><span>🙋 Receivers</span><strong id="adminReceivers">0</strong></div>
-              </div>
+
             </section>
 
-            <section id="profileCard" class="card profile-card">
-              <div class="card-title" style="margin-bottom:12px;"><span class="card-title-icon">👤</span>My profile</div>
+            <section
+                    id="rewardsCard"
+                    class="card"
+                    hidden
+            >
+
+              <div class="card-head">
+
+                <div>
+
+                  <div class="card-title">
+
+                                        <span class="card-title-icon">
+                                            🎁
+                                        </span>
+
+                    Rewards
+
+                  </div>
+
+
+                  <div class="card-sub">
+                    Earn points. Unlock rewards.
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div
+                      id="rewardsContainer"
+                      class="rewards"
+              >
+
+                <div class="empty-card">
+                  Loading rewards...
+                </div>
+
+              </div>
+
+
+              <div class="reward-history-head">
+                Your redeemed rewards
+              </div>
+
+
+              <div
+                      id="rewardHistory"
+                      class="reward-history"
+              >
+
+                <div class="empty-card">
+                  No redeemed rewards yet.
+                </div>
+
+              </div>
+
+            </section>
+
+            <section
+                    id="adminCard"
+                    class="card"
+                    hidden
+            >
+
+              <div class="card-head">
+
+                <div>
+
+                  <div class="card-title">
+
+                                        <span class="card-title-icon">
+                                            👑
+                                        </span>
+
+                    Admin dashboard
+
+                  </div>
+
+
+                  <div class="card-sub">
+                    Live overview of users, food listings and impact.
+                  </div>
+
+                </div>
+
+              </div>
+
+
+              <div
+                      id="adminStatsGrid"
+                      class="admin-stats-grid"
+              >
+
+
+                <div class="admin-stat">
+
+                                    <span>
+                                        👥 Users
+                                    </span>
+
+                  <strong id="adminUsers">
+                    0
+                  </strong>
+
+                </div>
+
+
+                <div class="admin-stat">
+
+                                    <span>
+                                        🍱 Listings
+                                    </span>
+
+                  <strong id="adminListings">
+                    0
+                  </strong>
+
+                </div>
+
+
+                <div class="admin-stat">
+
+                                    <span>
+                                        📦 Picked up
+                                    </span>
+
+                  <strong id="adminPicked">
+                    0
+                  </strong>
+
+                </div>
+
+
+                <div class="admin-stat">
+
+                                    <span>
+                                        🌿 Servings saved
+                                    </span>
+
+                  <strong id="adminSaved">
+                    0
+                  </strong>
+
+                </div>
+
+
+                <div class="admin-stat">
+
+                                    <span>
+                                        🟢 Available
+                                    </span>
+
+                  <strong id="adminAvailable">
+                    0
+                  </strong>
+
+                </div>
+
+
+                <div class="admin-stat">
+
+                                    <span>
+                                        🟡 Claimed
+                                    </span>
+
+                  <strong id="adminClaimed">
+                    0
+                  </strong>
+
+                </div>
+
+
+                <div class="admin-stat">
+
+                                    <span>
+                                        👨‍🍳 Donors
+                                    </span>
+
+                  <strong id="adminDonors">
+                    0
+                  </strong>
+
+                </div>
+
+
+                <div class="admin-stat">
+
+                                    <span>
+                                        🙋 Receivers
+                                    </span>
+
+                  <strong id="adminReceivers">
+                    0
+                  </strong>
+
+                </div>
+
+
+              </div>
+
+            </section>
+
+
+            <section
+                    id="profileCard"
+                    class="card profile-card"
+            >
+
+              <div
+                      class="card-title"
+                      style="margin-bottom:12px;"
+              >
+
+                                <span class="card-title-icon">
+                                    👤
+                                </span>
+
+                My profile
+
+              </div>
+
+
               <div class="profile-user">
-                <div class="profile-avatar" id="profileAvatarInitial">U</div>
-                <div>
-                  <strong id="profileName">My profile</strong>
-                  <span id="profileEmail">Manage your account</span>
+
+
+                <div
+                        class="profile-avatar"
+                        id="profileAvatarInitial"
+                >
+                  U
                 </div>
-                <span id="profileRole" class="profile-role">USER</span>
+
+
+                <div>
+
+                  <strong id="profileName">
+                    My profile
+                  </strong>
+
+                  <span id="profileEmail">
+                                        Manage your account
+                                    </span>
+
+                </div>
+
+
+                <span
+                        id="profileRole"
+                        class="profile-role"
+                >
+                                    USER
+                                </span>
+
+
               </div>
+
             </section>
+
 
           </div>
 
         </div>
 
-        <div id="notificationPanel" class="notification-panel" hidden>
-          <div class="notification-panel-head"><strong>Notifications</strong><button id="closeNotifications" type="button">×</button></div>
-          <div id="notificationList"><div class="notification-empty">You're all caught up 🌱</div></div>
+
+        <div
+                id="notificationPanel"
+                class="notification-panel"
+                hidden
+        >
+
+          <div class="notification-panel-head">
+
+            <strong>
+              Notifications
+            </strong>
+
+
+            <button
+                    id="closeNotifications"
+                    type="button"
+                    aria-label="Close notifications"
+            >
+              ×
+            </button>
+
+          </div>
+
+
+          <div id="notificationList">
+
+            <div class="notification-empty">
+              🔔 No notifications yet.
+            </div>
+
+          </div>
+
+        </div>
+        <div class="footer">
+
+          Food Waste Reducer
+          &bull;
+          Good Food
+          &bull;
+          Less Waste
+          &bull;
+          Greater Impact 🌱
+
         </div>
 
-        <div class="footer">Food Waste Reducer &bull; Good Food &bull; Less Waste &bull; Greater Impact 🌱</div>
 
       </section>
 
     </main>
-  </div>
-</div>
 
-<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+  </div>
+
+</div>
+<script
+        src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js">
+</script>
+
 <script src="app.js"></script>
+
+
 </body>
 </html>

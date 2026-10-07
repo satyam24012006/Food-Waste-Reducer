@@ -61,6 +61,27 @@ public class Dtos {
     /** The other party's contact details (never broadcast, fetched on demand). */
     public record ContactResponse(String name, String phone) {}
 
+    public record NotificationResponse(
+            Long id,
+            String title,
+            String message,
+            String icon,
+            boolean read,
+            LocalDateTime createdAt
+    ) {
+
+        public static NotificationResponse from(Notification n) {
+            return new NotificationResponse(
+                    n.getId(),
+                    n.getTitle(),
+                    n.getMessage(),
+                    n.getIcon(),
+                    n.isRead(),
+                    n.getCreatedAt()
+            );
+        }
+    }
+
     /** Message pushed over WebSocket. type = NEW | CLAIMED | CANCELLED | PICKED_UP | EXPIRED | DELETED */
     public record ListingEvent(String type, ListingResponse listing) {}
 
